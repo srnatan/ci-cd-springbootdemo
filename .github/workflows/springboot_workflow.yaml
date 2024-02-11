@@ -41,7 +41,7 @@ jobs:
               run: |
                 java --version
                 ./gradlew build
-                echo "result=OK" >> $GITHUB_OUTPUTS
+                echo "result=OK" >> $GITHUB_OUTPUT
 
     springboot-container:
         runs-on: ubuntu-latest
