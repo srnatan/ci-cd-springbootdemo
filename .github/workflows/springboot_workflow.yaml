@@ -53,7 +53,7 @@ jobs:
 
             - name: Build Container
               run: |
-                ${{ needs.springboot-build.outputs.success }}
+                echo ${{ needs.springboot-build.outputs.success }}
 
 
 
