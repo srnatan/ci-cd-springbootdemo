@@ -22,5 +22,5 @@ jobs:
               uses: actions/checkout@v4.1.1
 
             - name: Check java version
-              uses: java --version
+              run: java --version
             
