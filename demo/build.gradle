@@ -24,3 +24,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task getJarName(){
+	println "${rootProject.name}-${version}"
+}
