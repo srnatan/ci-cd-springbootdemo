@@ -41,7 +41,7 @@ jobs:
               run: |
                 java --version
                 ./gradlew build
-                export JAR_NAME=$(./gradlew -q getJarName)
+                echo "JAR_NAME=$(./gradlew -q getJarName)" >> $GITHUB_ENV 
                 echo "result=OK" >> $GITHUB_OUTPUT
             
             - name: Archive
