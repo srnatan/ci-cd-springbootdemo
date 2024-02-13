@@ -52,26 +52,26 @@ jobs:
                 name: spring-boot-jar
                 path: demo/build/libs/${{ env.JAR_NAME }}.jar
 
-    springboot-container:
-        runs-on: ubuntu-latest
-        needs: springboot-build
+    # springboot-container:
+    #     runs-on: ubuntu-latest
+    #     needs: springboot-build
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4.1.1
+    #     steps:
+    #         - name: Checkout
+    #           uses: actions/checkout@v4.1.1
 
-            - name: Build Container
-              run: |
-                echo ${{ needs.springboot-build.outputs.success }}
+    #         - name: Build Container
+    #           run: |
+    #             echo ${{ needs.springboot-build.outputs.success }}
 
-            - name: Get Jar
-              uses: actions/download-artifact@v4
-              with:
-                name: spring-boot-jar
-                path: demo
+    #         - name: Get Jar
+    #           uses: actions/download-artifact@v4
+    #           with:
+    #             name: spring-boot-jar
+    #             path: demo
 
-            - name: Run ls
-              run: ls -lrth
+    #         - name: Run ls
+    #           run: ls -lrth
 
 
 
