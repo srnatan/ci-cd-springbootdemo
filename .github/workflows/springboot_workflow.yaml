@@ -15,9 +15,7 @@ jobs:
     container-demo:
         runs-on: ubuntu-latest
         container:
-            image: eclipse-temurin:17-jdk
-        env: 
-          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+            image: eclipse-temurin:17-jdk        
         
         steps:
             - name: checkout
@@ -31,6 +29,8 @@ jobs:
         #lo corremos en un container porque necesitamos java 17 y por defecto el runner usa java 11
         container:
             image: eclipse-temurin:17-jdk
+        env: 
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         outputs:
             success: ${{ steps.build.outputs.result }}
 
