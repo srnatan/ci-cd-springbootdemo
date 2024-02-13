@@ -1,79 +1,82 @@
 name: SpringBoot Microservice
 
 defaults:
-    run:
-        shell: bash
-        working-directory: demo
+  run:
+    shell: bash
+    working-directory: demo
 
 on:
-    push:
+  push:
+    paths:
+      - demo
 
-    workflow_dispatch:
-
+  workflow_dispatch:
 
 jobs:
-    container-demo:
-        runs-on: ubuntu-latest
-        container:
-            image: eclipse-temurin:17-jdk        
-        
-        steps:
-            - name: checkout
-              uses: actions/checkout@v4.1.1
+  container-demo:
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:17-jdk
 
-            - name: Check java version
-              run: java --version
-    
-    springboot-build:
-        runs-on: ubuntu-latest
-        #lo corremos en un container porque necesitamos java 17 y por defecto el runner usa java 11
-        container:
-            image: eclipse-temurin:17-jdk
-        env: 
-          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-        outputs:
-            success: ${{ steps.build.outputs.result }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4.1.1
-            
-            - name: Build
-              id: build
-              run: |
-                java --version
-                ./gradlew build
-                echo "JAR_NAME=$(./gradlew -q getJarName)" >> $GITHUB_ENV 
-                echo "result=OK" >> $GITHUB_OUTPUT
-            
-            - name: Archive
-              uses: actions/upload-artifact@v3
-              with:
-                name: spring-boot-jar
-                path: demo/build/libs/${{ env.JAR_NAME }}.jar
+      - name: Check java version
+        run: java --version
 
-    # springboot-container:
-    #     runs-on: ubuntu-latest
-    #     needs: springboot-build
+  springboot-build:
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:17-jdk
+    outputs:
+      success: ${{ steps.build.outputs.result }}
 
-    #     steps:
-    #         - name: Checkout
-    #           uses: actions/checkout@v4.1.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
 
-    #         - name: Build Container
-    #           run: |
-    #             echo ${{ needs.springboot-build.outputs.success }}
+      - name: Build
+        id: build
+        run: |
+          java --version
+          ./gradlew build
+          echo "APP_JAR=$(./gradlew -q getJarName)" >> $GITHUB_ENV
+          echo "result=OK" >> $GITHUB_OUTPUT
 
-    #         - name: Get Jar
-    #           uses: actions/download-artifact@v4
-    #           with:
-    #             name: spring-boot-jar
-    #             path: demo
+      - name: Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot-jar
+          path: demo/build/libs/${{ env.APP_JAR }}.jar
 
-    #         - name: Run ls
-    #           run: ls -lrth
+  springboot-container:
+    runs-on: ubuntu-latest
+    needs: springboot-build
+
+    env:
+      GITHUB_REPOSITORY: ${{ github.repository }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Build Container
+        run: |
+          echo "${{ needs.springboot-build.outputs.success }}"
+
+      - name: Get JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: spring-boot-jar
+          path: demo
+      - name: Run ls
+        run: ls -lrth
+
+      - name: Docker Build with JAR
+        run: |
+          docker build -t spring-boot-demo:latest .
+          repository_lowercase=$(echo "${{ env.GITHUB_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          docker tag spring-boot-demo:latest ghcr.io/$repository_lowercase/spring-boot-demo:latest
 
 
-
-
-            
