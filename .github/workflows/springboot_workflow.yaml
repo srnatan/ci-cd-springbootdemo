@@ -16,6 +16,8 @@ jobs:
         runs-on: ubuntu-latest
         container:
             image: eclipse-temurin:17-jdk
+        env: 
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         
         steps:
             - name: checkout
