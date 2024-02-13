@@ -47,7 +47,7 @@ jobs:
                 echo "result=OK" >> $GITHUB_OUTPUT
             
             - name: Archive
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: spring-boot-jar
                 path: demo/build/libs/${{ env.JAR_NAME }}.jar
