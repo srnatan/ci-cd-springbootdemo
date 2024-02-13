@@ -7,8 +7,6 @@ defaults:
 
 on:
     push:
-      paths:
-        - demo
 
     workflow_dispatch:
 
